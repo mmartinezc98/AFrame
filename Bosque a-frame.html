@@ -3,45 +3,9 @@
 <head>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-environment-component@1.5.x/dist/aframe-environment-component.min.js"></script>
+  
   <script>
-    /*  // funcion para generar los arboles
-      function generateTrees() {
-        const treeCount = 20; // numero de arboles
-        const areaSize = 10;  // area de generacion
-        const treesContainer = document.querySelector('#trees');
 
-        for (let i = 0; i < treeCount; i++) {
-          const x = (Math.random() - 0.5) * areaSize * 2;
-          const z = -4 + (Math.random() - 0.5) * areaSize * 2;
-          const y = 0;
-
-          // visual
-          const tree = document.createElement('a-entity');
-          tree.setAttribute('gltf-model', '#arbol1');
-          tree.setAttribute('position', `${x} ${y} ${z}`);
-          tree.setAttribute('scale', '0.5 0.5 0.5');
-          treesContainer.appendChild(tree);
-
-          // colisiones
-          const collider = document.createElement('a-cylinder');
-          collider.setAttribute('position', `${x} 1 ${z}`); 
-          collider.setAttribute('radius', '0.3');
-          collider.setAttribute('height', '2');
-          collider.setAttribute('static-body', '');
-          collider.setAttribute('visible', 'false');
-          treesContainer.appendChild(collider);
-        }
-      }
-
-      // Wait for scene to load
-      window.addEventListener('load', () => {
-        const scene = document.querySelector('a-scene');
-        if (scene.hasLoaded) {
-          generateTrees();
-        } else {
-          scene.addEventListener('loaded', generateTrees);
-        }
-      });*/
   </script>
 
 
@@ -57,7 +21,7 @@
     </a-assets>
 
     
-
+    <a-entity environment="preset: forest"></a-entity>
     <a-entity gltf-model="#escenario" position="0 0 0" scale="1 1 1"></a-entity>
 
 
