@@ -1,39 +1,123 @@
 <html>
-
 <head>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-environment-component@1.5.x/dist/aframe-environment-component.min.js"></script>
-  
+  <script src="https://unpkg.com/aframe-troika-text/dist/aframe-troika-text.min.js"></script>
+
   <script>
+    // Componente para que todos los meshes del GLB proyecten y reciban sombras
+    AFRAME.registerComponent('cast-shadows', {
+      init: function () {
+        this.el.addEventListener('model-loaded', () => {
+          this.el.getObject3D('mesh').traverse(function (node) {
+            if (node.isMesh) { 
+              node.castShadow = true; 
+              node.receiveShadow = true; 
+            }
+          });
+        });
+      }
+    });
 
+    // Función para alternar linterna
+    function toggleLinterna() {
+      const linterna = document.querySelector('#linterna');
+      const nuevaIntensidad = linterna.getAttribute('light').intensity > 0 ? 0 : 25;
+      linterna.setAttribute('light', 'intensity', nuevaIntensidad);
+
+      const interruptorAudio = document.querySelector('#Interruptor');
+      interruptorAudio.currentTime=0;
+      interruptorAudio.play();
+    }
+
+    // que al pulsar la E se encienda y se apague la linterna
+    document.addEventListener('keydown', (event) => {
+      if (event.code === 'KeyE') {
+        toggleLinterna();
+      }
+    });
   </script>
-
-
 </head>
 
 <body>
-  <a-scene>
-    <a-assets>
-      <!--<a-asset-item id="arbol1" src="https://mmartinezc98.github.io/A-Frame-Project/arbol_1.glb"></a-asset-item>
-		  <a-asset-item id="suelo" src="https://mmartinezc98.github.io/A-Frame-Project/base_suelo.glb"></a-asset-item> -->
+  <a-scene renderer="physicallyCorrectLights: true; shadowMapEnabled: true; shadowMapType: pcfsoft">
+
+    <a-assets>     
+      <a-asset-item id="escenario" src="https://mmartinezc98.github.io/AFrame/blend/Exportados/ESCENARIO.glb"></a-asset-item>
       
-      <a-asset-item id="escenario" src="https://mmartinezc98.github.io/AFrame/.blend/Exportados/ESCENARIO.glb"></a-asset-item>
     </a-assets>
 
+    <!-- Environment nocturno -->
+    <a-entity environment="
+        fog: 0.8;        
+        preset: starry;
+        grid: none; 
+        ground: none;        
+        stageSize: 400;
+        shadowSize: 10;
+        lighting: none;
+        lightPosition: 0 -7 0;
+    "></a-entity>
+
     
-    <a-entity environment="preset: forest"></a-entity>
-    <a-entity gltf-model="#escenario" position="0 0 0" scale="1 1 1"></a-entity>
+
+    <!-- Modelo del escenario con sombras -->
+    <a-entity 
+      gltf-model="#escenario" 
+      position="0 0 0" 
+      scale="1 1 1" 
+      cast-shadows>
+    </a-entity>   
+
+    <!-- Jugador / cámara -->
+    <a-entity id="player" camera look-controls wasd-controls position="3 1.5 4">
+
+      <!-- Texto tutorial linterna -->
+      <a-entity 
+        troika-text="value: Pulsa E para encender/apagar la linterna; fontSize: 0.04; color: white;"
+        position="1.2 -0.6 -1"  
+      ></a-entity>
+
+      <!-- Linterna del jugador -->
+      <a-light
+        id="linterna"
+        type="spot"
+        intensity="25"
+        angle="35"
+        rotation="0 0 0"
+        penumbra=".23"
+        distance="20"
+        position=".4 0 0"
+        castShadow="true"
+        shadow-map-width="1024"
+        shadow-map-height="1024"
+        shadow-camera-far="50"
+        color="#ffffff"
+      ></a-light> 
+    </a-entity>   
 
 
-    <a-entity id="player" camera look-controls wasd-controls position="0 1.6 4"></a-entity>
-
-
-    <a-sky color="#ECECEC"></a-sky>
-
-
-
+   
 
   </a-scene>
-</body>
 
+
+  <!--sonido de interruptor-->
+    <audio id="Interruptor" src="Audios/interruptor.wav"></audio>
+
+  <!-- Música ambiental -->
+        <audio id="testAudio" src="Audios/Ambiental.mp3" loop></audio>
+
+  <!--para que el audio se reproduzca nada mas empezar-->
+  <script>
+        document.addEventListener('click', () => {
+            document.getElementById('testAudio').play();
+        });
+    </script>
+
+
+</body>
 </html>
+
+
+
