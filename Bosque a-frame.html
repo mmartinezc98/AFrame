@@ -5,7 +5,25 @@
   <script src="https://unpkg.com/aframe-troika-text/dist/aframe-troika-text.min.js"></script>
 
   <script>
-    // Componente para que todos los meshes del GLB proyecten y reciban sombras
+    // Variables Globales para el Contador
+    let notasRecogidas = 0;
+    // Mantenemos 7 notas en total
+    const totalNotas = 7; 
+
+    // Función para actualizar el texto del contador en pantalla
+    function actualizarContadorTexto() {
+        const contadorElemento = document.querySelector('#contadorNotas');
+        if (contadorElemento) {
+            const nuevoValor = `${notasRecogidas}/${totalNotas}`;
+            contadorElemento.setAttribute('troika-text', 'value', nuevoValor);
+
+            if (notasRecogidas === totalNotas) {
+                console.log('¡Todas las notas recogidas! Fin del juego.');
+            }
+        }
+    }
+
+    // sombras
     AFRAME.registerComponent('cast-shadows', {
       init: function () {
         this.el.addEventListener('model-loaded', () => {
@@ -15,6 +33,29 @@
               node.receiveShadow = true; 
             }
           });
+        });
+      }
+    });
+
+    //Recoger la Nota al hacer clic y actualizar contador
+    AFRAME.registerComponent('recoger-nota', {
+      init: function () {
+        this.el.addEventListener('click', () => {
+          if (!this.el.getAttribute('visible')) return; 
+
+          console.log('Nota recogida:', this.el.id);
+          
+          // eliminar el bloque
+          this.el.setAttribute('visible', false); 
+          
+          // quitar la luz
+          if (this.el.components.light) {
+             this.el.removeAttribute('light');
+          }
+
+          // actualizar el contador
+          notasRecogidas++;
+          actualizarContadorTexto(); 
         });
       }
     });
@@ -36,49 +77,109 @@
         toggleLinterna();
       }
     });
+    
+    // Inicializar el contador al cargar la escena
+    window.onload = function() {
+        setTimeout(actualizarContadorTexto, 500); 
+    };
   </script>
 </head>
 
 <body>
   <a-scene renderer="physicallyCorrectLights: true; shadowMapEnabled: true; shadowMapType: pcfsoft">
 
-    <a-assets>     
+    <a-assets>
       <a-asset-item id="escenario" src="https://mmartinezc98.github.io/AFrame/blend/Exportados/ESCENARIO.glb"></a-asset-item>
-      
     </a-assets>
 
-    <!-- Environment nocturno -->
     <a-entity environment="
-        fog: 0.8;        
+        fog: 0.8; 
         preset: starry;
         grid: none; 
-        ground: none;        
+        ground: none;
         stageSize: 400;
         shadowSize: 10;
         lighting: none;
         lightPosition: 0 -7 0;
     "></a-entity>
 
-    
-
-    <!-- Modelo del escenario con sombras -->
     <a-entity 
       gltf-model="#escenario" 
       position="0 0 0" 
       scale="1 1 1" 
       cast-shadows>
-    </a-entity>   
+    </a-entity>
 
-    <!-- Jugador / cámara -->
+    <a-box 
+        id="nota-1" class="clickable" recoger-nota
+        position="4 0.5 0" rotation="0 45 0" width="0.3" height="0.3" depth="0.3" color="#FFFF00" castShadow="false" receiveShadow="false"
+        material="emissive: #FFFF00; emissiveIntensity: 1.5; metalness: 0.8; roughness: 0.1; shader: standard;"
+        light="type: point; intensity: 2; color: #FFFF00; distance: 8; castShadow: false">       
+    </a-box>
+
+    <a-box 
+        id="nota-2" class="clickable" recoger-nota
+        position="-95 0.5 -15" rotation="0 10 0" width="0.3" height="0.3" depth="0.3" color="#00FF00" castShadow="false" receiveShadow="false"
+        material="emissive: #00FF00; emissiveIntensity: 1.2; metalness: 0.8; roughness: 0.1; shader: standard;"
+        light="type: point; intensity: 1.5; color: #00FF00; distance: 6; castShadow: false">
+    </a-box>
+    
+    <a-box 
+        id="nota-3" class="clickable" recoger-nota
+        position="75 0.5 28" rotation="0 90 0" width="0.3" height="0.3" depth="0.3" color="#FF0000" castShadow="false" receiveShadow="false"
+        material="emissive: #FF0000; emissiveIntensity: 1.8; metalness: 0.8; roughness: 0.1; shader: standard;"
+        light="type: point; intensity: 3; color: #FF0000; distance: 9; castShadow: false">
+    </a-box>
+
+    <a-box 
+        id="nota-4" class="clickable" recoger-nota
+        position="-50 0.5 10" rotation="0 -30 0" width="0.3" height="0.3" depth="0.3" color="#0000FF" castShadow="false" receiveShadow="false"
+        material="emissive: #0000FF; emissiveIntensity: 1.6; metalness: 0.8; roughness: 0.1; shader: standard;"
+        light="type: point; intensity: 2.5; color: #0000FF; distance: 7; castShadow: false">
+    </a-box>
+    
+    <a-box 
+        id="nota-5" class="clickable" recoger-nota
+        position="98 0.5 -5" rotation="0 0 0" width="0.3" height="0.3" depth="0.3" color="#00FFFF" castShadow="false" receiveShadow="false"
+        material="emissive: #00FFFF; emissiveIntensity: 1.4; metalness: 0.8; roughness: 0.1; shader: standard;"
+        light="type: point; intensity: 1.8; color: #00FFFF; distance: 6; castShadow: false">
+    </a-box>
+    
+    <a-box 
+        id="nota-6" class="clickable" recoger-nota
+        position="-15 0.5 22" rotation="0 135 0" width="0.3" height="0.3" depth="0.3" color="#FF00FF" castShadow="false" receiveShadow="false"
+        material="emissive: #FF00FF; emissiveIntensity: 1.7; metalness: 0.8; roughness: 0.1; shader: standard;"
+        light="type: point; intensity: 2.8; color: #FF00FF; distance: 8; castShadow: false">
+    </a-box>
+    
+    <a-box 
+        id="nota-7" class="clickable" recoger-nota
+        position="-70 0.5 -30" rotation="0 -60 0" width="0.3" height="0.3" depth="0.3" color="#FFFFFF" castShadow="false" receiveShadow="false"
+        material="emissive: #FFFFFF; emissiveIntensity: 2; metalness: 0.8; roughness: 0.1; shader: standard;"
+        light="type: point; intensity: 3.5; color: #FFFFFF; distance: 10; castShadow: false">
+    </a-box>
+
+
     <a-entity id="player" camera look-controls wasd-controls position="3 1.5 4">
 
-      <!-- Texto tutorial linterna -->
+      <a-cursor fuse="false" raycaster="objects: .clickable" color="#00FF00"></a-cursor>
+
+      <a-entity 
+        id="contadorNotas"
+        troika-text="
+            value: Notas recogidas: 0/7; 
+            fontSize: 0.1; 
+            color: yellow; 
+            align: right;
+            maxWidth: 2;" 
+        position="0.9 0.7 -1"  
+      ></a-entity>
+      
       <a-entity 
         troika-text="value: Pulsa E para encender/apagar la linterna; fontSize: 0.04; color: white;"
-        position="1.2 -0.6 -1"  
+        position="1 -0.7 -1"
       ></a-entity>
 
-      <!-- Linterna del jugador -->
       <a-light
         id="linterna"
         type="spot"
@@ -94,30 +195,18 @@
         shadow-camera-far="50"
         color="#ffffff"
       ></a-light> 
-    </a-entity>   
-
-
-   
-
+    </a-entity> 
   </a-scene>
 
+  <!--AUDIOS-->
+  <audio id="Interruptor" src="Audios/interruptor.wav"></audio>
 
-  <!--sonido de interruptor-->
-    <audio id="Interruptor" src="Audios/interruptor.wav"></audio>
+  <audio id="testAudio" src="Audios/Ambiental.mp3" loop></audio>
 
-  <!-- Música ambiental -->
-        <audio id="testAudio" src="Audios/Ambiental.mp3" loop></audio>
-
-  <!--para que el audio se reproduzca nada mas empezar-->
   <script>
-        document.addEventListener('click', () => {
-            document.getElementById('testAudio').play();
-        });
-    </script>
-
-
+    document.addEventListener('click', () => {
+      document.getElementById('testAudio').play();
+    });
+  </script>
 </body>
 </html>
-
-
-

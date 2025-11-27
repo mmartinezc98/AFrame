@@ -1,0 +1,50 @@
+<html>
+<head>
+  <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+
+  <script>
+    // Componente que cambia de HTML al pulsar el botón
+    AFRAME.registerComponent('cargar-escena', {
+      schema: {
+        url: {type: 'string'}
+      },
+      init: function () {
+        this.el.addEventListener('click', () => {
+          window.location.href = this.data.url;
+        });
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <a-scene cursor="rayOrigin: mouse">
+
+    <a-plane 
+      position="0 1.6 -4"  
+      width="11.92"         
+      height="6.71"
+      src = "Imagenes/Fondo_Menu.png"
+      shader="flat"
+      side="double">
+    </a-plane>
+
+    <a-plane 
+      position="0 1.6 -3"
+      width="1.2"
+      height="0.4"
+      color="#4CAF50"
+      class="clickable"
+      cargar-escena="url: Bosque a-frame.html">
+    </a-plane>
+
+    <a-entity 
+      text="value: INICIAR; align: center; color: white; width: 2"
+      position="0 1.6 -2.99">
+    </a-entity>
+
+    <a-entity camera position="0 1.6 0"></a-entity>
+
+  </a-scene>
+</body>
+</html>
